@@ -41,16 +41,16 @@ pipeline {
             }
         }
 
-        stage('Manual Approval') {
-            steps {
-                timeout(time: 10, unit: 'MINUTES') {
-                    input(
-                        message: "Proceed with changes for ${params.ENVIRONMENT}?",
-                        ok: 'Apply'
-                    )
-                }
-            }
-        }
+        // stage('Manual Approval') {
+        //     steps {
+        //         timeout(time: 10, unit: 'MINUTES') {
+        //             input(
+        //                 message: "Proceed with changes for ${params.ENVIRONMENT}?",
+        //                 ok: 'Apply'
+        //             )
+        //         }
+        //     }
+        // }
 
         stage('Terraform Apply') {
             steps {
