@@ -25,7 +25,8 @@ pipeline {
         stage('Workspace Select') {
             steps {
                 sh '''
-                    terraform workspace select ${ENVIRONMENT} || terraform workspace new ${ENVIRONMENT}
+                    terraform workspace select "${ENVIRONMENT}" ||
+                    terraform workspace new "${ENVIRONMENT}"
                 '''
             }
         }
@@ -33,13 +34,9 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 sh '''
-                    if [ "${ENVIRONMENT}" = "dev" ]; then
-                        terraform plan -var-file=dev -out=tfplan
-                    elif [ "${ENVIRONMENT}" = "stg" ]; then
-                        terraform plan -var-file=stg.tfvars -out=tfplan
-                    elif [ "${ENVIRONMENT}" = "prod" ]; then
-                        terraform plan -var-file=Prod -out=tfplan
-                    fi
+                    terraform plan \
+                        -var-file="${ENVIRONMENT}.tfvars" \
+                        -out=tfplan
                 '''
             }
         }
@@ -47,7 +44,10 @@ pipeline {
         stage('Manual Approval') {
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
-                    input message: "Proceed with changes for ${params.ENVIRONMENT}?", ok: "Apply"
+                    input(
+                        message: "Proceed with changes for ${params.ENVIRONMENT}?",
+                        ok: 'Apply'
+                    )
                 }
             }
         }
@@ -76,7 +76,7 @@ Details:
 - Build: ${env.BUILD_NUMBER}
 - URL: ${env.BUILD_URL}
 """,
-                to: 'abdelrhman9004@gmail.com'
+                to: 'ahmedfaroukcvx@gmail.com'
             )
         }
 
